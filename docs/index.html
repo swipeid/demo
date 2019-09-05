@@ -50,9 +50,9 @@
     }
   }
 
-  function updateProfile(token) {
+  function updateProfile(disclosure) {
     var str = "";
-    if (disclosure.firstName != nil && disclosure.lastName)
+    if (disclosure.firstName != nil && disclosure.lastName) {
       str += "<b>Name:</b>" + disclosure.firstName + "  " + disclosure.lastName + "<br>";
     }
     str += "<b>Gender:</b>" + obj.gender + "<br>";
