@@ -52,11 +52,12 @@
   }
 
   function updateProfile(disclosure) {
+    console.log(disclosure);
     var str = "";
-    if (disclosure.firstName != nil && disclosure.lastName) {
+    if (disclosure.firstName && disclosure.lastName) {
       str += "<b>Name:</b>" + disclosure.firstName + "  " + disclosure.lastName + "<br>";
     }
-    str += "<b>Gender:</b>" + obj.gender + "<br>";
+    str += "<b>Gender:</b>" + disclosure.gender + "<br>";
     //str += "<b>Photo:</b><img src='https://graph.facebook.com/me/picture?access_token=" + token + "'/>" + "<br>";
     //str += "Profile Link:  <a href='" + obj.link + "'>" + obj.link + "</a>";
     $("#profile").html(str);
