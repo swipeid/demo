@@ -1,96 +1,76 @@
 <!DOCTYPE HTML>
 <html>
-
 <head>
-    <script   src="https://code.jquery.com/jquery-3.4.1.slim.min.js"   integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="   crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            initiate();
+  <script   src="https://code.jquery.com/jquery-3.4.1.slim.min.js"   integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="   crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+    initiate();
+  });
 
-        });
+  function initiate() {
+    if ("WebSocket" in window) {
+      var ws = new WebSocket("ws://socket.swipeid.net:8080/gencode");
 
-        function initiate() {
-          var arr = [  "name" ,   "email"];
-          var req = btoa(arr);
+      ws.onopen = function() {
+        var hello = {
+          op: 'hello'
+        };
+        ws.send(JSON.stringify(hello));
+      };
+
+      ws.onmessage = function(evt) {
+        $("#qrcode").html("");
+        var obj = JSON.parse(evt.data);
+        console.log("Recieved:" + JSON.stringify(obj));
+        if (obj.op == 'hello') {
+          console.log("### Got hello token " + obj.token);
+          var req = btoa(JSON.stringify(["name","email"]));
           console.log(req);
-          var str = JSON.stringify(arr);
-          console.log(str, btoa(str));
-            if ("WebSocket" in window) {
-
-                var ws = new WebSocket("ws://localhost:8080/gencode");
-
-                ws.onopen = function() {
-                    var hello = {
-                        op: 'hello'
-                    };
-                    ws.send(JSON.stringify(hello));
-
-                };
-
-                ws.onmessage = function(evt) {
-					             $("#qrcode").html("");
-                    var obj = JSON.parse(evt.data);
-                    console.log("Recieved:" + JSON.stringify(obj));
-                    if (obj.op == 'hello')
-                    {
-                        console.log("### Got hello token " + obj.token);
-                        var req = btoa(JSON.stringify(["name","email"]));
-                        console.log(req);
-                        var url = "https://mobile.swipeid.net/"+req+"/"+obj.token;
-                        //Generate QR Code and show to user.
-                        $("#qrcode").qrcode({
-                            "width": 300,
-                            "height": 300,
-                            "text": url
-                        });
-                    } else if (obj.op == 'authdone')
-                    {
-                        console.log("### Got disclosure " + obj.disclosure);
-                        ws.close();
-                        $("#qrcode").hide();
-                        $("#profile").html("<img src='iconLoading.gif' />");
-                        updateProfile(obj.disclosure);
-                    }
-
-
-                };
-
-
-                ws.onclose = function() {
-                    console.log("Connection is closed...");
-                };
-            } else {
-                alert("WebSocket NOT supported by your Browser!");
-            }
+          var url = "https://mobile.swipeid.net/"+req+"/"+obj.token;
+          //Generate QR Code and show to user.
+          $("#qrcode").qrcode({
+            "width": 300,
+            "height": 300,
+            "text": url});
+        } else if (obj.op == 'authdone') {
+          console.log("### Got disclosure " + obj.disclosure);
+          ws.close();
+          $("#qrcode").hide();
+          $("#profile").html("<img src='iconLoading.gif' />");
+          updateProfile(obj.disclosure);
         }
+      };
 
-        function updateProfile(token) {
+      ws.onclose = function() {
+        console.log("Connection is closed...");
+      };
+    } else {
+      alert("WebSocket NOT supported by your Browser!");
+    }
+  }
 
-          var str = "";
+  function updateProfile(token) {
+    var str = "";
+    if (disclosure.firstName != nil && disclosure.lastName)
+      str += "<b>Name:</b>" + disclosure.firstName + "  " + disclosure.lastName + "<br>";
+    }
+    str += "<b>Gender:</b>" + obj.gender + "<br>";
+    //str += "<b>Photo:</b><img src='https://graph.facebook.com/me/picture?access_token=" + token + "'/>" + "<br>";
+    //str += "Profile Link:  <a href='" + obj.link + "'>" + obj.link + "</a>";
+    $("#profile").html(str);
+  }
+  
+  </script>
 
-          if (disclosure.firstName != nil && disclosure.lastName)
-                str += "<b>Name:</b>" + disclosure.firstName + "  " + disclosure.lastName + "<br>";
-          }
-          str += "<b>Gender:</b>" + obj.gender + "<br>";
-          //str += "<b>Photo:</b><img src='https://graph.facebook.com/me/picture?access_token=" + token + "'/>" + "<br>";
-          //str += "Profile Link:  <a href='" + obj.link + "'>" + obj.link + "</a>";
-          $("#profile").html(str);
-
-        }
-    </script>
-
-    <body>
-        <h1>Demo of Swipe In</h1>
-        <br>
-        <div align="center">
-            <div id="qrcode">
-              <img src='iconLoading.gif' />
-            </div>
-
-            <div id="profile"></div>
-        </div>
-
-    </body>
-
+  <body>
+    <h1>Demo of Swipe In</h1>
+    <br>
+    <div align="center">
+      <div id="qrcode">
+        <img src='iconLoading.gif' />
+      </div>
+      <div id="profile"></div>
+    </div>
+  </body>
 </html>
