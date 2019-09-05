@@ -10,7 +10,7 @@
 
   function initiate() {
     if ("WebSocket" in window) {
-      var ws = new WebSocket("ws://socket.swipeid.net/gencode");
+      var ws = new WebSocket("wss://socket.swipeid.net/gencode");
 
       ws.onopen = function() {
         var hello = {
@@ -45,6 +45,7 @@
       ws.onclose = function() {
         console.log("Connection is closed...");
       };
+
     } else {
       alert("WebSocket NOT supported by your Browser!");
     }
