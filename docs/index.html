@@ -10,7 +10,7 @@
 
   function initiate() {
     if ("WebSocket" in window) {
-      var ws = new WebSocket("ws://socket.swipeid.net:8080/gencode");
+      var ws = new WebSocket("ws://socket.swipeid.net/gencode");
 
       ws.onopen = function() {
         var hello = {
@@ -60,7 +60,7 @@
     //str += "Profile Link:  <a href='" + obj.link + "'>" + obj.link + "</a>";
     $("#profile").html(str);
   }
-  
+
   </script>
 
   <body>
