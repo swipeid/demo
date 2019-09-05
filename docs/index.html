@@ -30,32 +30,27 @@
 
                 ws.onmessage = function(evt) {
 					             $("#qrcode").html("");
-
                     var obj = JSON.parse(evt.data);
-                    console.log("Receivied:" + JSON.stringify(obj));
-
+                    console.log("Recieved:" + JSON.stringify(obj));
                     if (obj.op == 'hello')
                     {
                         console.log("### Got hello token " + obj.token);
-
                         var req = btoa(JSON.stringify(["name","email"]));
                         console.log(req);
                         var url = "https://mobile.swipeid.net/"+req+"/"+obj.token;
-
                         //Generate QR Code and show to user.
                         $("#qrcode").qrcode({
-                            "width": 100,
-                            "height": 100,
+                            "width": 300,
+                            "height": 300,
                             "text": url
                         });
                     } else if (obj.op == 'authdone')
                     {
-                        console.log("### Got auth token " + obj.accessToken);
+                        console.log("### Got disclosure " + obj.disclosure);
                         ws.close();
                         $("#qrcode").hide();
-
                         $("#profile").html("<img src='iconLoading.gif' />");
-                        getProfileData(obj.accessToken);
+                        updateProfile(obj.disclosure);
                     }
 
 
@@ -70,27 +65,23 @@
             }
         }
 
+        function updateProfile(token) {
 
-        function getProfileData(token) {
-            var url = "https://graph.facebook.com/me?access_token=" + token;
-            $.get(url, function(obj) {
-                var str = "";
-                str += "<b>Your Name:</b>" + obj.first_name + "  " + obj.last_name + "<br>";
-                str += "<b>Gender:</b>" + obj.gender + "<br>";
-                str += "<b>Photo:</b><img src='https://graph.facebook.com/me/picture?access_token=" + token + "'/>" + "<br>";
-                str += "Profile Link:  <a href='" + obj.link + "'>" + obj.link + "</a>";
-                $("#profile").html(str);
+          var str = "";
 
-            }, "json").error(function(err) {
-
-
-            });;
+          if (disclosure.firstName != nil && disclosure.lastName)
+                str += "<b>Name:</b>" + disclosure.firstName + "  " + disclosure.lastName + "<br>";
+          }
+          str += "<b>Gender:</b>" + obj.gender + "<br>";
+          //str += "<b>Photo:</b><img src='https://graph.facebook.com/me/picture?access_token=" + token + "'/>" + "<br>";
+          //str += "Profile Link:  <a href='" + obj.link + "'>" + obj.link + "</a>";
+          $("#profile").html(str);
 
         }
     </script>
 
     <body>
-        <br>
+        <h1>Demo of Swipe In</h1>
         <br>
         <div align="center">
             <div id="qrcode">
