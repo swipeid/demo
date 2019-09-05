@@ -1,2 +1,2 @@
-# demo
-A rudimentary webservice using SwipeId for login
+# swipeid-demo
+Demo web service using SwipeId for login
