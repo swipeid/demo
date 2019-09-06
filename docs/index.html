@@ -3,6 +3,7 @@
 <head>
   <script   src="https://code.jquery.com/jquery-3.4.1.slim.min.js"   integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="   crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+  <script src="base64.js"></script>
   <script type="text/javascript">
   $(document).ready(function() {
     initiate();
@@ -25,7 +26,8 @@
         console.log("Recieved:" + JSON.stringify(obj));
         if (obj.op == 'hello') {
           console.log("### Got hello token " + obj.token);
-          var req = btoa(JSON.stringify(["name","email"]));
+          var req = Base64.encode(JSON.stringify(["name","email"]));
+          //btoa(JSON.stringify(["name","email"]));
           console.log(req);
           var url = "https://mobile.swipeid.net/request/"+req+"/"+obj.token;
           //Generate QR Code and show to user.
