@@ -27,7 +27,7 @@
           console.log("### Got hello token " + obj.token);
           var req = btoa(JSON.stringify(["name","email"]));
           console.log(req);
-          var url = "https://mobile.swipeid.net/"+req+"/"+obj.token;
+          var url = "https://mobile.swipeid.net/request/"+req+"/"+obj.token;
           //Generate QR Code and show to user.
           $("#qrcode").qrcode({
             "width": 300,
